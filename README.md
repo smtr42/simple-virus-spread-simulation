@@ -3,12 +3,6 @@
 </h1>
 
 <p align="center">
-  <a href="">
-    <img src="https://upload.wikimedia.org/wikipedia/fr/0/0d/Logo_OpenClassrooms.png" alt="Logo" width="100" height="100">
-  </a>
-</p>
-
-<p align="center">
   <a href="https://www.python.org/">
     <img src="https://img.shields.io/badge/Python-3.7-green.svg">
   </a>
@@ -21,8 +15,6 @@
 </p>
 
 
-
-  <h3 align="center">Simple visualization of how fast a virus can spread among population</h3>
 
  <p align="center">
     Simple visualization of how fast a virus can spread among population.
@@ -49,7 +41,7 @@
 During the Covid-19 outbreak I saw a very nice article from the [Washington Post](https://www.washingtonpost.com/graphics/2020/world/corona-simulator/) explaining how a virus spread among people. It contained nice embedded visuals.
 I wanted, as a personal challenge and as an aspiring programmer, to write a similar program but in python 3.
 
-It was heavily inspired from [Peter Collingridge](https://github.com/petercollingridge) physics simulation.
+It was heavily inspired from [Peter Collingridge](https://github.com/petercollingridge) physics simulation and his very nice [tutorial](http://www.petercollingridge.co.uk/tutorials/pygame-physics-simulation/).
 
 
 <!-- GETTING STARTED -->
@@ -78,19 +70,6 @@ python -m main
 ```
 ### Specifications
 
-When prompted, answer the question by typing the appropriate number or letter.
-For a first start you must download data from the API and reset the database. 
-Here is an example of usage :
-* Type "y" to donwload data
-* Type "y" to reset the database
-* Type "1" to search for food to substitute
-* Select a category
-* Select food
-* Select healthy food
-* You can either go back or save the food in the database for later use.
-<br>
-
-All along you can write "r" for going back, "q" to quit, "m" to go back to the first menu.
 
 ## Authors
 Project Link: [https://github.com/smtr42/P5_openfoodfact]
@@ -101,5 +80,7 @@ Project Link: [https://github.com/smtr42/P5_openfoodfact]
    <img src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Logo.svg.original.svg" alt="linkedin" width="200" height="54">
  </a>
 <br>
+
+Inspired from [Peter Collingridge](https://github.com/petercollingridge) physics simulation and his very nice [tutorial](http://www.petercollingridge.co.uk/tutorials/pygame-physics-simulation/).
 
 Photo by [Markus Spiske](https://unsplash.com/@markusspiske?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
