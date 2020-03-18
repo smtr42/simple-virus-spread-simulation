@@ -33,21 +33,25 @@ def collide(p1, p2):
 
     dist = math.hypot(dx, dy)
     if dist < p1.size + p2.size:
-
         angle = math.atan2(dy, dx) + 0.5 * math.pi
         total_mass = p1.mass + p2.mass
 
-        angle1speed1 = p1.angle, p1.speed * (p1.mass - p2.mass) / total_mass
-        anglespeed2 = angle, 2 * p2.speed * p2.mass / total_mass
+        if p1.speed == 0:
+            p1_speed = p2.speed
+        else:
+            p1_speed = p1.speed
+        if p2.speed == 0:
+            p2_speed = p1.speed
+        else:
+            p2_speed = p2.speed
+
+        angle1speed1 = p1.angle, p1_speed * (p1.mass - p2.mass) / total_mass
+        anglespeed2 = angle, 2 * p2_speed * p2.mass / total_mass
         (p1.angle, p1.speed) = add_vectors(angle1speed1, anglespeed2)
 
-        angle2speed2 = p2.angle, p2.speed * (p2.mass - p1.mass) / total_mass
-        anglespeed1 = angle + math.pi, 2 * p1.speed * p1.mass / total_mass
+        angle2speed2 = p2.angle, p2_speed * (p2.mass - p1.mass) / total_mass
+        anglespeed1 = angle + math.pi, 2 * p1_speed * p1.mass / total_mass
         (p2.angle, p2.speed) = add_vectors(angle2speed2, anglespeed1)
-
-        elasticity = p1.elasticity * p2.elasticity
-        p1.speed *= elasticity
-        p2.speed *= elasticity
 
         overlap = 0.5 * (p1.size + p2.size - dist + 1)
         p1.x += math.sin(angle) * overlap
@@ -59,18 +63,20 @@ def collide(p1, p2):
 
 def contamination(p1, p2):
     if p1.state == 1 or p2.state == 1:
-        p1.colour = (255, 0, 0)
-        p2.state = 1
-        p1.state = 1
-        p2.colour = (255, 0, 0)
+        p1.colour = p2.colour = (255, 0, 0)
+        p2.state = p1.state = 1
 
 
-def heal_from_time(elapsed_time, dt, particle):
+def heal_from_time(dt, particle):
     if particle.state == 1:
         particle.time_from_contamination += dt
-    if particle.time_from_contamination >= 5.0:
+    if particle.time_from_contamination >= 8.0:
         particle.colour = (0, 255, 0)
         particle.state = 2
+
+
+def counter():
+    pass
 
 
 class Particle:
@@ -87,19 +93,19 @@ class Particle:
         self.angle = 0
         self.mass = mass
         self.drag = 1  # 1
-        self.elasticity = 1  # 0.9
         self.state = state
+        self.movement = True
         self.time_from_contamination = 0
 
     def move(self):
         """ Update position based on speed, angle
             Update speed based on drag """
-
-        self.x += math.sin(self.angle) * self.speed
-        self.y -= math.cos(self.angle) * self.speed
-        self.speed *= self.drag
-        # if self.speed > 0.1:
-        #     self.speed = 0.1
+        if self.movement:
+            self.x += math.sin(self.angle) * self.speed
+            self.y -= math.cos(self.angle) * self.speed
+            self.speed *= self.drag
+            # if self.speed > 0.1:
+            #     self.speed = 0.1
 
 
 class Simulation:
@@ -111,35 +117,44 @@ class Simulation:
         self.colour = (255, 255, 255)
         self.mass_of_air = 0.0  # 0.2
         self.elasticity = 1  # 0.75
-        self.acceleration = None
+        self.counter = {"healthy":0, "sick":0, "recovered":0,}
 
-    def add_particle(self, n=1, **kargs):
+    def add_particle(self, n=1, **kwargs):
         """ Add n particles with properties given by keyword arguments """
         for i in range(n):
-            # size = kargs.get('size', random.randint(10, 20))
-            # mass = kargs.get('mass', random.randint(100, 10000))
             size = 10
             mass = 100
-            x = kargs.get('x', random.uniform(size, self.width - size))
-            y = kargs.get('y', random.uniform(size, self.height - size))
-            if i != 1:
+            x = kwargs.get('x', random.uniform(size, self.width - size))
+            y = kwargs.get('y', random.uniform(size, self.height - size))
+            healthy = range(kwargs.get('killer', 0),n)
+
+            if i in healthy:
                 state = 0
             else:
                 state = 1
+
             particle = Particle((x, y), size, state, mass)
-            # particle.speed = kargs.get('speed', random.random())
-            particle.speed = 1
-            particle.angle = kargs.get('angle', random.uniform(0, math.pi * 2))
-            if state == 1:
-                particle.colour = kargs.get('colour', (255, 0, 0))
+
+            freezed = kwargs.get('freezed', 0)
+            if i <= (n * freezed / 100) and state != 1:
+                particle.speed = 0
+                particle.movement = False
             else:
-                particle.colour = kargs.get('colour', (0, 0, 255))
+                particle.speed = kwargs.get('speed', 1)
+                particle.movement = True
+
+            particle.angle = kwargs.get('angle',
+                                        random.uniform(0, math.pi * 2))
+            if state == 1:
+                particle.colour = kwargs.get('colour', (255, 0, 0))
+            else:
+                particle.colour = kwargs.get('colour', (0, 0, 255))
             particle.drag = (particle.mass / (
                     particle.mass + self.mass_of_air)) ** particle.size
 
             self.particles.append(particle)
 
-    def update(self, elapsed_time, dt):
+    def update(self, dt):
         """  Moves particles and tests for collisions with the walls and each other """
 
         for i, particle in enumerate(self.particles):
@@ -148,7 +163,8 @@ class Simulation:
             for particle2 in self.particles[i + 1:]:
                 if collide(particle, particle2):
                     contamination(particle, particle2)
-            heal_from_time(elapsed_time, dt, particle)
+            heal_from_time(dt, particle)
+
 
     def wall_bounce(self, particle):
         """ Tests whether a particle has hit the boundary of the environment """
