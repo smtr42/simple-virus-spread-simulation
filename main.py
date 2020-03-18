@@ -7,8 +7,8 @@ screen_dimensions = (800, 600)
 screen = pygame.display.set_mode(screen_dimensions)
 sim = particle.Simulation(screen_dimensions)
 
-sim.add_particle(100)
-sim.add_particle(x=200, y=250, size=10, speed=1, angle=0)
+# sim.add_particle(10)
+sim.add_particle(n=150, speed=6, freezed=90, killer=3)
 timer = pygame.time.Clock()
 elapsed_time = 0
 
@@ -20,8 +20,7 @@ while running:
             running = False
 
     dt = timer.tick() / 1000
-    elapsed_time += dt
-    sim.update(elapsed_time, dt)
+    sim.update(dt)
     screen.fill(sim.colour)
 
     for p in sim.particles:
