@@ -51,7 +51,7 @@ It's a quick side project, optimisation, PEP compliance, documentation and gener
 ### Example
 <p align="center">
   <a href="https://github.com/smtr42">
-    <img src="img/covid_cimu.gif">
+    <img src="img/covid_simu.gif">
   </a>
 </p>
 
