@@ -24,9 +24,13 @@ def add_vectors(vector1, vector2):
 
 
 def collide(p1, p2):
-    """ Tests whether two particles overlap
-        If they do, make them bounce
-        i.e. update their angle, speed and position """
+    """ Tests if two particles collide
+    Args:
+        p1(obj): first particle
+        p2(obj): second particle
+    returns:
+        True (bool): notify the collide has happened
+        """
 
     dx = p1.x - p2.x
     dy = p1.y - p2.y
@@ -62,21 +66,27 @@ def collide(p1, p2):
 
 
 def contamination(p1, p2):
+    """ Change the state of the particle after collision
+    Args:
+        p1(obj): first particle
+        p2(obj): second particle
+    """
     if p1.state == 1 or p2.state == 1:
         p1.colour = p2.colour = (187, 100, 29)
         p2.state = p1.state = 1
 
 
 def heal_from_time(dt, particle):
+    """
+    Args:
+        dt(int): time between two loops of pygame
+        particle(obj): the particle to heal
+    """
     if particle.state == 1:
         particle.time_from_contamination += dt
     if particle.time_from_contamination >= 4.0:
         particle.colour = (203, 138, 192)
         particle.state = 2
-
-
-def counter():
-    pass
 
 
 class Wall:
@@ -90,7 +100,13 @@ class Wall:
 
 
 class Particle:
-    """ A circular object with a velocity, size and mass """
+    """ Main object, circular
+    Args:
+        xy(tuple): tuple with x and y coordinate
+        size(int): size of the particle
+        state(int): can be 0 (healthy), 1(sick) or 2(recovered)
+        mass(int): the mass of the particle
+     """
 
     def __init__(self, xy, size, state, mass=1, ):
         self.x, self.y = xy
@@ -107,20 +123,22 @@ class Particle:
         self.movement = True
         self.time_from_contamination = 0
 
-
     def move(self):
-        """ Update position based on speed, angle
-            Update speed based on drag """
+        """ Update position based on speed, angle"""
         if self.movement:
             self.x += math.sin(self.angle) * self.speed
             self.y -= math.cos(self.angle) * self.speed
             self.speed *= self.drag
+            # Speed limiter for low number of particules
             # if self.speed > 0.1:
             #     self.speed = 0.1
 
 
 class Simulation:
-    """ Defines the boundary of a simulation and its properties """
+    """ Defines the boundary of a simulation and its properties
+    Args:
+        screen_dimensions(tuple): give width and height of the pygame screen
+    """
 
     def __init__(self, screen_dimensions):
         self.width, self.height = screen_dimensions
@@ -136,18 +154,27 @@ class Simulation:
         self.recovered = []
 
     def add_wall(self, **kwargs):
+        """Add a wall to separate particles
+        Args:
+            'add'(bool): add or not the wall
+        """
         if kwargs.get("add", False):
             self.wall = Wall()
 
     def add_particle(self, n=1, **kwargs):
-        """ Add n particles with properties given by keyword arguments """
+        """ Add a number of particle in respect of arguments
+         Args:
+             n(int): specify then umber of particle to create
+             speed(in): the initial speed particles will start with
+             freezed(int): specify the percentage of particle to be immobile
+             killer(int): the number of particle to be sick at the start
+        """
         for i in range(n):
             size = 5
             mass = 100
-            x = kwargs.get('x', random.uniform(size, self.width - size))
-            y = kwargs.get('y', random.uniform(size, self.height - size))
+            x = random.uniform(size, self.width - size)
+            y = random.uniform(size, self.height - size)
             healthy = range(kwargs.get('killer', 0), n)
-
             if i in healthy:
                 state = 0
             else:
@@ -163,8 +190,7 @@ class Simulation:
                 particle.speed = kwargs.get('speed', 1)
                 particle.movement = True
 
-            particle.angle = kwargs.get('angle',
-                                        random.uniform(0, math.pi * 2))
+            particle.angle = random.uniform(0, math.pi * 2)
             if state == 1:
                 particle.colour = kwargs.get('colour', (187, 100, 29))
             else:
@@ -175,7 +201,9 @@ class Simulation:
             self.particles.append(particle)
 
     def update(self, dt):
-        """  Moves particles and tests for collisions with the walls and each other """
+        """  Moves particle, test for collisions, give sickness, heal and
+        count
+        """
         for i, particle in enumerate(self.particles):
             particle.move()
             self.wall_bounce(particle)
@@ -187,10 +215,12 @@ class Simulation:
         self.healthy.append(self.particle_counter.count(0))
         self.sick.append(self.particle_counter.count(1))
         self.recovered.append(self.particle_counter.count(2))
-        self.particle_counter=[]
+        self.particle_counter = []
 
     def wall_bounce(self, particle):
-        """ Tests whether a particle has hit the boundary of the environment """
+        """ Test if a particle bounce on boundaries.
+        Args:
+            particle(obj): the particle to be tested"""
 
         if particle.x > self.width - particle.size:
             particle.x = 2 * (self.width - particle.size) - particle.x
