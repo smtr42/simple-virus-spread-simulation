@@ -27,7 +27,7 @@
 * [About the Project](#about-the-project)
 * [Getting Started](#getting-started)
 * [Usage](#usage)
-* [Contact](#contact)
+* [Contact](#authors)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -38,11 +38,12 @@
   </a>
 </p>
 
-During the Covid-19 outbreak I saw a very nice article from the [Washington Post](https://www.washingtonpost.com/graphics/2020/world/corona-simulator/) explaining how a virus spread among people. It contained nice embedded visuals.
-I wanted, as a personal challenge and as an aspiring programmer, to write a similar program but in python 3.
+During the Covid-19 outbreak I saw a very nice article from the [Washington Post](https://www.washingtonpost.com/graphics/2020/world/corona-simulator/) explaining how a virus spread among people. It includes nice embedded visuals made by [Harry Stevens](https://twitter.com/Harry_Stevens).
+I wanted, as a personal challenge and as an aspiring programmer, to write a similar simple program but in python 3.
 
-It was heavily inspired from [Peter Collingridge](https://github.com/petercollingridge) physics simulation and his very nice [tutorial](http://www.petercollingridge.co.uk/tutorials/pygame-physics-simulation/).
-
+The collision algorithm was heavily inspired (copied) from [Peter Collingridge](https://github.com/petercollingridge) python 2 physics simulation and his very nice [tutorial](http://www.petercollingridge.co.uk/tutorials/pygame-physics-simulation/).
+### State
+It's a simple simulation. There is yet no chart implementation.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -59,17 +60,12 @@ git clone https://github.com/smtr42/spread.git
 ```sh
 pipenv install
 ```
-### Launch simulation
 
-
-<!-- USAGE EXAMPLES -->
 ## Usage
 Open a Command Line Interface and launch the main.py script with Python.
 ```shell script
 python -m main
 ```
-### Specifications
-
 
 ## Authors
 Project Link: [https://github.com/smtr42/P5_openfoodfact]
@@ -82,5 +78,4 @@ Project Link: [https://github.com/smtr42/P5_openfoodfact]
 <br>
 
 Inspired from [Peter Collingridge](https://github.com/petercollingridge) physics simulation and his very nice [tutorial](http://www.petercollingridge.co.uk/tutorials/pygame-physics-simulation/).
-
 Photo by [Markus Spiske](https://unsplash.com/@markusspiske?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
