@@ -45,6 +45,10 @@ The collision algorithm was heavily inspired (copied) from [Peter Collingridge](
 ### State
 It's a simple simulation. There is yet no chart implementation.
 
+The algorithm is quite expensive, so above a few hundred particles the simulation is not usable.
+
+It's a quick side project, optimisation, PEP compliance, documentation and general code readability will be worked in the future.
+
 <!-- GETTING STARTED -->
 ## Getting Started
 
