@@ -48,6 +48,12 @@ It's a simple simulation. There is yet no chart implementation.
 The algorithm is quite expensive, so above a few hundred particles the simulation is not usable.
 
 It's a quick side project, optimisation, PEP compliance, documentation and general code readability will be worked in the future.
+### Example
+<p align="center">
+  <a href="https://github.com/smtr42">
+    <img src="img/covid_cimu.gif">
+  </a>
+</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started

@@ -89,7 +89,9 @@ def heal_from_time(dt, particle):
         particle.state = 2
 
 
+# This class is not yet finished.
 class Wall:
+    """Wall class, to separate particles"""
     def __init__(self):
         self.colour = (0, 0, 0)
         self.x = 200
