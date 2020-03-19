@@ -2,96 +2,10 @@ import math
 import random
 
 
-def add_vectors(vector1, vector2):
-    """ This add two vectors. Angle is in radian.
-
-    Args:
-        vector1(tuple): first vector
-        vector2(tuple): second vector
-    returns:
-        angle, length (tuple): resulted vector
-    """
-
-    angle1, length1 = vector1
-    angle2, length2 = vector2
-    x = math.sin(angle1) * length1 + math.sin(angle2) * length2
-    y = math.cos(angle1) * length1 + math.cos(angle2) * length2
-
-    angle = 0.5 * math.pi - math.atan2(y, x)
-    length = math.hypot(x, y)
-
-    return angle, length
-
-
-def collide(p1, p2):
-    """ Tests if two particles collide
-    Args:
-        p1(obj): first particle
-        p2(obj): second particle
-    returns:
-        True (bool): notify the collide has happened
-        """
-
-    dx = p1.x - p2.x
-    dy = p1.y - p2.y
-
-    dist = math.hypot(dx, dy)
-    if dist < p1.size + p2.size:
-        angle = math.atan2(dy, dx) + 0.5 * math.pi
-        total_mass = p1.mass + p2.mass
-
-        if p1.speed == 0:
-            p1_speed = p2.speed
-        else:
-            p1_speed = p1.speed
-        if p2.speed == 0:
-            p2_speed = p1.speed
-        else:
-            p2_speed = p2.speed
-
-        angle1speed1 = p1.angle, p1_speed * (p1.mass - p2.mass) / total_mass
-        anglespeed2 = angle, 2 * p2_speed * p2.mass / total_mass
-        (p1.angle, p1.speed) = add_vectors(angle1speed1, anglespeed2)
-
-        angle2speed2 = p2.angle, p2_speed * (p2.mass - p1.mass) / total_mass
-        anglespeed1 = angle + math.pi, 2 * p1_speed * p1.mass / total_mass
-        (p2.angle, p2.speed) = add_vectors(angle2speed2, anglespeed1)
-
-        overlap = 0.5 * (p1.size + p2.size - dist + 1)
-        p1.x += math.sin(angle) * overlap
-        p1.y -= math.cos(angle) * overlap
-        p2.x -= math.sin(angle) * overlap
-        p2.y += math.cos(angle) * overlap
-        return True
-
-
-def contamination(p1, p2):
-    """ Change the state of the particle after collision
-    Args:
-        p1(obj): first particle
-        p2(obj): second particle
-    """
-    if p1.state == 1 or p2.state == 1:
-        p1.colour = p2.colour = (187, 100, 29)
-        p2.state = p1.state = 1
-
-
-def heal_from_time(dt, particle):
-    """
-    Args:
-        dt(int): time between two loops of pygame
-        particle(obj): the particle to heal
-    """
-    if particle.state == 1:
-        particle.time_from_contamination += dt
-    if particle.time_from_contamination >= 4.0:
-        particle.colour = (203, 138, 192)
-        particle.state = 2
-
-
 # This class is not yet finished.
 class Wall:
     """Wall class, to separate particles"""
+
     def __init__(self):
         self.colour = (0, 0, 0)
         self.x = 200
@@ -243,3 +157,90 @@ class Simulation:
             particle.y = 2 * particle.size - particle.y
             particle.angle = math.pi - particle.angle
             particle.speed *= self.elasticity
+
+
+def add_vectors(vector1, vector2):
+    """ This add two vectors. Angle is in radian.
+
+    Args:
+        vector1(tuple): first vector
+        vector2(tuple): second vector
+    returns:
+        angle, length (tuple): resulted vector
+    """
+
+    angle1, length1 = vector1
+    angle2, length2 = vector2
+    x = math.sin(angle1) * length1 + math.sin(angle2) * length2
+    y = math.cos(angle1) * length1 + math.cos(angle2) * length2
+
+    angle = 0.5 * math.pi - math.atan2(y, x)
+    length = math.hypot(x, y)
+
+    return angle, length
+
+
+def collide(p1, p2):
+    """ Tests if two particles collide
+    Args:
+        p1(obj): first particle
+        p2(obj): second particle
+    returns:
+        True (bool): notify the collide has happened
+        """
+
+    dx = p1.x - p2.x
+    dy = p1.y - p2.y
+
+    dist = math.hypot(dx, dy)
+    if dist < p1.size + p2.size:
+        angle = math.atan2(dy, dx) + 0.5 * math.pi
+        total_mass = p1.mass + p2.mass
+
+        if p1.speed == 0:
+            p1_speed = p2.speed
+        else:
+            p1_speed = p1.speed
+        if p2.speed == 0:
+            p2_speed = p1.speed
+        else:
+            p2_speed = p2.speed
+
+        angle1speed1 = p1.angle, p1_speed * (p1.mass - p2.mass) / total_mass
+        anglespeed2 = angle, 2 * p2_speed * p2.mass / total_mass
+        (p1.angle, p1.speed) = add_vectors(angle1speed1, anglespeed2)
+
+        angle2speed2 = p2.angle, p2_speed * (p2.mass - p1.mass) / total_mass
+        anglespeed1 = angle + math.pi, 2 * p1_speed * p1.mass / total_mass
+        (p2.angle, p2.speed) = add_vectors(angle2speed2, anglespeed1)
+
+        overlap = 0.5 * (p1.size + p2.size - dist + 1)
+        p1.x += math.sin(angle) * overlap
+        p1.y -= math.cos(angle) * overlap
+        p2.x -= math.sin(angle) * overlap
+        p2.y += math.cos(angle) * overlap
+        return True
+
+
+def contamination(p1, p2):
+    """ Change the state of the particle after collision
+    Args:
+        p1(obj): first particle
+        p2(obj): second particle
+    """
+    if p1.state == 1 or p2.state == 1:
+        p1.colour = p2.colour = (187, 100, 29)
+        p2.state = p1.state = 1
+
+
+def heal_from_time(dt, particle):
+    """
+    Args:
+        dt(int): time between two loops of pygame
+        particle(obj): the particle to heal
+    """
+    if particle.state == 1:
+        particle.time_from_contamination += dt
+    if particle.time_from_contamination >= 4.0:
+        particle.colour = (203, 138, 192)
+        particle.state = 2
