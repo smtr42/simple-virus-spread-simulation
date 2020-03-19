@@ -56,13 +56,23 @@ It's a quick side project, optimisation, PEP compliance, documentation and gener
 I used Python 3.7.
 I use pipenv to manage dependencies.
 
-1. Clone the repo
-```sh
+#### Pipenv
+- Clone the repo
+```shell script
 git clone https://github.com/smtr42/spread.git
 ```
-2. Install required dependencies
-```sh
+- Install required dependencies
+```shell script
 pipenv install
+```
+#### Virtual env
+- Create a virtual environment
+```shell script
+python3 -m venv env
+```
+- Install requirements
+```shell script
+pip install -r requirements.txt
 ```
 
 ## Usage
