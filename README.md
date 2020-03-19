@@ -86,7 +86,16 @@ Open a Command Line Interface and launch the main.py script with Python.
 ```shell script
 python -m main
 ```
+To modify the parameters, open the main.py file :
+```python
+sim.add_particle(n=150, speed=6, freezed=93, killer=4)
+```
+- **n** is the number of particles
+- **speed** is the initial speed of a particle
+- **freezed** is the percentage of particles fixed in space
+- **killer** is the number of particles sick at the start
 
+Depending on how much particles is instantiated, one should modify the speed for better render. Note that the algorithm is O(n²) and for large **n** this simulation doesn't work.
 ## Authors
 Project Link: [https://github.com/smtr42/P5_openfoodfact]
 
