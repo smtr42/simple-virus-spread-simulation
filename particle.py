@@ -63,20 +63,30 @@ def collide(p1, p2):
 
 def contamination(p1, p2):
     if p1.state == 1 or p2.state == 1:
-        p1.colour = p2.colour = (255, 0, 0)
+        p1.colour = p2.colour = (187, 100, 29)
         p2.state = p1.state = 1
 
 
 def heal_from_time(dt, particle):
     if particle.state == 1:
         particle.time_from_contamination += dt
-    if particle.time_from_contamination >= 8.0:
-        particle.colour = (0, 255, 0)
+    if particle.time_from_contamination >= 4.0:
+        particle.colour = (203, 138, 192)
         particle.state = 2
 
 
 def counter():
     pass
+
+
+class Wall:
+    def __init__(self):
+        self.colour = (0, 0, 0)
+        self.x = 200
+        self.y = 0
+        self.width = 35
+        self.height = 320
+        self.thickness = 4
 
 
 class Particle:
@@ -85,9 +95,9 @@ class Particle:
     def __init__(self, xy, size, state, mass=1, ):
         self.x, self.y = xy
         self.size = size
-        self.colour = (0, 0, 255)
-        self.sick_colour = (255, 0, 0)
-        self.heal_colour = (0, 255, 0)
+        self.colour = (170, 198, 202)
+        self.sick_colour = (187, 100, 29)
+        self.heal_colour = (203, 138, 192)
         self.thickness = 0
         self.speed = 0
         self.angle = 0
@@ -96,6 +106,7 @@ class Particle:
         self.state = state
         self.movement = True
         self.time_from_contamination = 0
+
 
     def move(self):
         """ Update position based on speed, angle
@@ -117,16 +128,25 @@ class Simulation:
         self.colour = (255, 255, 255)
         self.mass_of_air = 0.0  # 0.2
         self.elasticity = 1  # 0.75
-        self.counter = {"healthy":0, "sick":0, "recovered":0,}
+        self.counter = {"healthy": 0, "sick": 0, "recovered": 0, }
+        self.wall = None
+        self.particle_counter = []
+        self.healthy = []
+        self.sick = []
+        self.recovered = []
+
+    def add_wall(self, **kwargs):
+        if kwargs.get("add", False):
+            self.wall = Wall()
 
     def add_particle(self, n=1, **kwargs):
         """ Add n particles with properties given by keyword arguments """
         for i in range(n):
-            size = 10
+            size = 5
             mass = 100
             x = kwargs.get('x', random.uniform(size, self.width - size))
             y = kwargs.get('y', random.uniform(size, self.height - size))
-            healthy = range(kwargs.get('killer', 0),n)
+            healthy = range(kwargs.get('killer', 0), n)
 
             if i in healthy:
                 state = 0
@@ -146,9 +166,9 @@ class Simulation:
             particle.angle = kwargs.get('angle',
                                         random.uniform(0, math.pi * 2))
             if state == 1:
-                particle.colour = kwargs.get('colour', (255, 0, 0))
+                particle.colour = kwargs.get('colour', (187, 100, 29))
             else:
-                particle.colour = kwargs.get('colour', (0, 0, 255))
+                particle.colour = kwargs.get('colour', (170, 198, 202))
             particle.drag = (particle.mass / (
                     particle.mass + self.mass_of_air)) ** particle.size
 
@@ -156,7 +176,6 @@ class Simulation:
 
     def update(self, dt):
         """  Moves particles and tests for collisions with the walls and each other """
-
         for i, particle in enumerate(self.particles):
             particle.move()
             self.wall_bounce(particle)
@@ -164,7 +183,11 @@ class Simulation:
                 if collide(particle, particle2):
                     contamination(particle, particle2)
             heal_from_time(dt, particle)
-
+            self.particle_counter.append(particle.state)
+        self.healthy.append(self.particle_counter.count(0))
+        self.sick.append(self.particle_counter.count(1))
+        self.recovered.append(self.particle_counter.count(2))
+        self.particle_counter=[]
 
     def wall_bounce(self, particle):
         """ Tests whether a particle has hit the boundary of the environment """
